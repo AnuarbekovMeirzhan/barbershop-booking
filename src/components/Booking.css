@@ -1,0 +1,226 @@
+.booking-section {
+  background-color: var(--bg-color);
+}
+
+.booking-container {
+  max-width: 800px;
+  margin: 0 auto;
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  padding: 4rem;
+  position: relative;
+}
+
+.booking-container::after {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  background: linear-gradient(45deg, transparent 40%, rgba(212, 175, 55, 0.1) 50%, transparent 60%);
+  z-index: -1;
+  filter: blur(20px);
+}
+
+.booking-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.booking-title {
+  font-size: 2.2rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+  letter-spacing: 1px;
+}
+
+.booking-subtitle {
+  color: var(--text-secondary);
+}
+
+.booking-progress {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 4rem;
+  position: relative;
+}
+
+.progress-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  z-index: 2;
+  flex: 1;
+}
+
+.step-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--bg-color);
+  border: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.8rem;
+  color: var(--text-secondary);
+  transition: all 0.3s ease;
+}
+
+.step-title {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  font-weight: 600;
+  letter-spacing: 1px;
+  transition: all 0.3s ease;
+}
+
+.progress-step.active .step-icon {
+  border-color: var(--accent-gold);
+  color: var(--accent-gold);
+  background: rgba(212, 175, 55, 0.05);
+}
+
+.progress-step.active .step-title {
+  color: var(--accent-gold);
+}
+
+.step-line {
+  position: absolute;
+  top: 22px;
+  left: 50%;
+  width: 100%;
+  height: 1px;
+  background: var(--border-color);
+  z-index: -1;
+}
+
+.step-content {
+  text-align: center;
+}
+
+.step-content h3 {
+  font-size: 1.5rem;
+  margin-bottom: 2rem;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.options-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.slots-grid {
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+}
+
+.option-btn {
+  background: var(--bg-color);
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  padding: 1.2rem;
+  border-radius: 4px;
+  font-size: 1rem;
+  transition: all 0.2s ease;
+}
+
+.option-btn:hover {
+  border-color: rgba(212, 175, 55, 0.5);
+  color: var(--text-primary);
+}
+
+.option-btn.selected {
+  background: var(--bg-color);
+  color: var(--accent-gold);
+  border-color: var(--accent-gold);
+  font-weight: 600;
+  box-shadow: inset 0 0 10px rgba(212, 175, 55, 0.1);
+}
+
+.date-picker-ui {
+  background: var(--bg-color);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  padding: 1.2rem;
+  font-size: 1.1rem;
+  font-family: inherit;
+  width: 100%;
+  max-width: 300px;
+  border-radius: 4px;
+  margin-bottom: 2rem;
+  outline: none;
+  color-scheme: dark;
+}
+
+.date-picker-ui:focus {
+  border-color: var(--accent-gold);
+}
+
+.booking-footer {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 3rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--border-color);
+}
+
+.booking-footer .btn-primary {
+  margin-left: auto;
+}
+
+.booking-footer .btn-primary:disabled {
+  background-color: transparent;
+  border-color: var(--border-color);
+  color: #555;
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
+}
+
+.booking-success {
+  text-align: center;
+  padding: 3rem 0;
+}
+
+.success-icon {
+  color: var(--accent-gold);
+  margin-bottom: 1.5rem;
+}
+
+.booking-success h3 {
+  font-size: 2.2rem;
+  margin-bottom: 1rem;
+  text-transform: uppercase;
+}
+
+.booking-success p {
+  color: var(--text-secondary);
+  margin-bottom: 3rem;
+  font-size: 1.1rem;
+  line-height: 1.8;
+}
+
+.booking-success strong {
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.fade-in {
+  animation: fadeIn 0.4s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 768px) {
+  .booking-container { padding: 2rem 1.5rem; }
+  .step-title { display: none; }
+  .options-grid { grid-template-columns: 1fr; }
+}
