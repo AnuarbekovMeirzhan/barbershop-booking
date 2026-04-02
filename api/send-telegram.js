@@ -6,8 +6,8 @@ export default async function handler(req, res) {
   const { barber, service, date, time } = req.body;
 
   // Use process.env for Node.js serverless functions (Vercel backend)
-  const botToken = process.env.VITE_TELEGRAM_BOT_TOKEN;
-  const chatId = process.env.VITE_TELEGRAM_CHAT_ID;
+  const botToken = process.env.TELEGRAM_BOT_TOKEN;
+  const chatId = process.env.TELEGRAM_CHAT_ID;
 
   if (!botToken || !chatId || botToken === 'your_bot_token_here') {
     return res.status(500).json({ error: 'Telegram credentials missing or invalid' });
