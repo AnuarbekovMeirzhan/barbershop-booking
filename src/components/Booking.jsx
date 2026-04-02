@@ -60,7 +60,10 @@ const Booking = () => {
     setSelection(prev => ({ ...prev, [key]: value }));
   };
 
+
+
   const nextStep = async () => {
+    console.log("Button clicked. Current step:", step);
     if (step < 4) {
       setStep(step + 1);
     } else {
@@ -91,6 +94,22 @@ const Booking = () => {
           time: selection.time,
           createdAt: new Date().toISOString()
         });
+        
+        console.log("Calling Telegram API...");
+        await fetch("/api/send-telegram", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            barber: selection.barber,
+            service: selection.service,
+            date: selection.date,
+            time: selection.time
+          }),
+        });
+        console.log("Telegram API finished");
+        
         setIsComplete(true);
       } catch (error) {
         console.error("Error saving booking:", error);

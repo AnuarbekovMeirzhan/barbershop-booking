@@ -1,17 +1,27 @@
 import React, { useState, useEffect } from 'react';
 import { collection, query, orderBy, onSnapshot, doc, deleteDoc } from 'firebase/firestore';
 import { db } from '../firebase';
-import { ArrowLeft, Trash2, Calendar, Clock, User, Scissors } from 'lucide-react';
+import { ArrowLeft, Trash2, Calendar, Clock, User, Scissors, LogOut } from 'lucide-react';
 import './AdminDashboard.css';
 
 const AdminDashboard = ({ onBack }) => {
   const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
+  
+  // Authentication states
+  const [isAuthenticated, setIsAuthenticated] = useState(
+    localStorage.getItem('luxeAdminAuth') === 'true'
+  );
+  const [passwordInput, setPasswordInput] = useState('');
+  const [authError, setAuthError] = useState('');
+
+  const HARDCODED_PASSWORD = "admin123";
 
   useEffect(() => {
+    if (!isAuthenticated) return;
+
     const q = query(collection(db, "appointments"), orderBy("createdAt", "desc"));
     
-    // onSnapshot listens for real-time updates so UI updates instantly on delete
     const unsubscribe = onSnapshot(q, (snapshot) => {
       const data = [];
       snapshot.forEach(doc => {
@@ -25,7 +35,24 @@ const AdminDashboard = ({ onBack }) => {
     });
 
     return () => unsubscribe();
-  }, []);
+  }, [isAuthenticated]);
+
+  const handleLogin = (e) => {
+    e.preventDefault();
+    if (passwordInput === HARDCODED_PASSWORD) {
+      setIsAuthenticated(true);
+      localStorage.setItem('luxeAdminAuth', 'true');
+      setAuthError('');
+    } else {
+      setAuthError('Incorrect password. Access denied.');
+    }
+  };
+
+  const handleLogout = () => {
+    setIsAuthenticated(false);
+    localStorage.removeItem('luxeAdminAuth');
+    setPasswordInput('');
+  };
 
   const handleDelete = async (id) => {
     if (window.confirm("Are you sure you want to delete this appointment?")) {
@@ -38,6 +65,35 @@ const AdminDashboard = ({ onBack }) => {
     }
   };
 
+  if (!isAuthenticated) {
+    return (
+      <div className="admin-dashboard login-mode">
+        <div className="container login-container animate-fade-up">
+           <button onClick={onBack} className="btn-back" style={{ marginBottom: '2rem' }}>
+              <ArrowLeft size={20} />
+              <span>Back to Site</span>
+           </button>
+           <div className="login-box">
+              <h2>Admin Login</h2>
+              <p>Enter the master password to access the panel.</p>
+              <form onSubmit={handleLogin} className="login-form">
+                <input 
+                  type="password" 
+                  value={passwordInput}
+                  onChange={(e) => setPasswordInput(e.target.value)}
+                  placeholder="Password"
+                  className="login-input"
+                  autoFocus
+                />
+                {authError && <div className="error-text">{authError}</div>}
+                <button type="submit" className="btn-primary login-btn">Login</button>
+              </form>
+           </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="admin-dashboard">
       <div className="admin-header">
@@ -47,6 +103,9 @@ const AdminDashboard = ({ onBack }) => {
             <span>Back to Site</span>
           </button>
           <h2>Admin Control Panel</h2>
+          <button onClick={handleLogout} className="btn-logout" title="Logout">
+            <LogOut size={20} />
+          </button>
         </div>
       </div>
 
