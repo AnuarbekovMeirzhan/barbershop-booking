@@ -1,11 +1,29 @@
+import React, { useState, useEffect } from 'react';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import Services from './components/Services';
 import Barbers from './components/Barbers';
 import Booking from './components/Booking';
 import Footer from './components/Footer';
+import AdminDashboard from './components/AdminDashboard';
 
 function App() {
+  const [currentView, setCurrentView] = useState('home');
+
+  useEffect(() => {
+    const handleHashChange = () => {
+      if (window.location.hash === '#admin') setCurrentView('admin');
+      else setCurrentView('home');
+    };
+    window.addEventListener('hashchange', handleHashChange);
+    handleHashChange(); // initial check
+    return () => window.removeEventListener('hashchange', handleHashChange);
+  }, []);
+
+  if (currentView === 'admin') {
+    return <AdminDashboard onBack={() => window.location.hash = ''} />;
+  }
+
   return (
     <>
       <Navbar />

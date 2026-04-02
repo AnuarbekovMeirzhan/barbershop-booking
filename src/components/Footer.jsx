@@ -44,6 +44,7 @@ const Footer = () => {
       </div>
       <div className="footer-bottom">
         <p>&copy; {new Date().getFullYear()} {t('footer.rights')}</p>
+        <a href="#admin" style={{ color: 'var(--border-color)', fontSize: '0.8rem', marginTop: '1rem', display: 'inline-block', transition: 'color 0.3s' }} onMouseEnter={(e) => e.target.style.color='var(--accent-gold)'} onMouseLeave={(e) => e.target.style.color='var(--border-color)'}>Admin Login</a>
       </div>
     </footer>
   );
