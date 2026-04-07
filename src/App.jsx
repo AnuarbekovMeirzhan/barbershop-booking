@@ -6,6 +6,7 @@ import Barbers from './components/Barbers';
 import Booking from './components/Booking';
 import Footer from './components/Footer';
 import AdminDashboard from './components/AdminDashboard';
+import BarberDashboard from './components/BarberDashboard';
 
 function App() {
   const [currentView, setCurrentView] = useState('home');
@@ -13,6 +14,7 @@ function App() {
   useEffect(() => {
     const handleHashChange = () => {
       if (window.location.hash === '#admin') setCurrentView('admin');
+      else if (window.location.hash === '#barber') setCurrentView('barber');
       else setCurrentView('home');
     };
     window.addEventListener('hashchange', handleHashChange);
@@ -22,6 +24,10 @@ function App() {
 
   if (currentView === 'admin') {
     return <AdminDashboard onBack={() => window.location.hash = ''} />;
+  }
+
+  if (currentView === 'barber') {
+    return <BarberDashboard onBack={() => window.location.hash = ''} />;
   }
 
   return (

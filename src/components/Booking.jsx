@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Calendar, User, Scissors, Clock, CheckCircle, Loader2 } from 'lucide-react';
+import { Calendar, User, Scissors, Clock, CheckCircle, Loader2, Phone } from 'lucide-react';
 import { collection, addDoc, getDocs, query, where } from 'firebase/firestore';
 import { db } from '../firebase';
 import './Booking.css';
@@ -12,7 +12,9 @@ const Booking = () => {
     barber: '',
     service: '',
     date: '',
-    time: ''
+    time: '',
+    name: '',
+    phone: ''
   });
   const [isComplete, setIsComplete] = useState(false);
   const [bookedSlots, setBookedSlots] = useState([]);
@@ -23,6 +25,7 @@ const Booking = () => {
     { id: 2, title: t('booking.step2'), icon: Scissors },
     { id: 3, title: t('booking.step3'), icon: Calendar },
     { id: 4, title: t('booking.step4'), icon: Clock },
+    { id: 5, title: t('booking.step5'), icon: Phone },
   ];
 
   const barbers = [t('booking.any_available'), t('barbers.b1_name'), t('barbers.b2_name'), t('barbers.b3_name')];
@@ -64,7 +67,7 @@ const Booking = () => {
 
   const nextStep = async () => {
     console.log("Button clicked. Current step:", step);
-    if (step < 4) {
+    if (step < 5) {
       setStep(step + 1);
     } else {
       setIsLoading(true);
@@ -92,6 +95,9 @@ const Booking = () => {
           service: selection.service,
           date: selection.date,
           time: selection.time,
+          name: selection.name,
+          phone: selection.phone,
+          status: "pending",
           createdAt: new Date().toISOString()
         });
         
@@ -105,7 +111,9 @@ const Booking = () => {
             barber: selection.barber,
             service: selection.service,
             date: selection.date,
-            time: selection.time
+            time: selection.time,
+            name: selection.name,
+            phone: selection.phone
           }),
         });
         console.log("Telegram API finished");
@@ -122,7 +130,7 @@ const Booking = () => {
 
   const reset = () => {
     setStep(1);
-    setSelection({ barber: '', service: '', date: '', time: '' });
+    setSelection({ barber: '', service: '', date: '', time: '', name: '', phone: '' });
     setIsComplete(false);
     setBookedSlots([]);
   };
@@ -198,7 +206,7 @@ const Booking = () => {
               {step === 4 && (
                 <div className="step-content fade-in">
                   <h3>{t('booking.select_time')}</h3>
-                  {isLoading ? (
+                  {isLoading && step === 4 ? (
                     <div style={{ padding: '2rem 0', display: 'flex', justifyContent: 'center' }}>
                       <Loader2 size={32} className="success-icon" style={{ animation: 'spin 1.5s linear infinite' }} />
                     </div>
@@ -223,6 +231,28 @@ const Booking = () => {
                 </div>
               )}
 
+              {step === 5 && (
+                <div className="step-content fade-in">
+                  <h3>{t('booking.step5')}</h3>
+                  <div className="input-group" style={{ display: 'flex', flexDirection: 'column', gap: '1rem', maxWidth: '400px', margin: '0 auto' }}>
+                    <input 
+                      type="text" 
+                      className="text-input-ui" 
+                      placeholder={t('booking.enter_name')}
+                      value={selection.name}
+                      onChange={(e) => handleSelect('name', e.target.value)}
+                    />
+                    <input 
+                      type="tel" 
+                      className="text-input-ui" 
+                      placeholder={t('booking.enter_phone')}
+                      value={selection.phone}
+                      onChange={(e) => handleSelect('phone', e.target.value)}
+                    />
+                  </div>
+                </div>
+              )}
+
               <div className="booking-footer">
                 {step > 1 && (
                   <button className="btn-outline" onClick={() => setStep(step - 1)} disabled={isLoading}>
@@ -237,12 +267,13 @@ const Booking = () => {
                     (step === 1 && !selection.barber) ||
                     (step === 2 && !selection.service) ||
                     (step === 3 && !selection.date) ||
-                    (step === 4 && !selection.time)
+                    (step === 4 && !selection.time) ||
+                    (step === 5 && (!selection.name || !selection.phone))
                   }
                   style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginLeft: 'auto' }}
                 >
-                  {isLoading && step === 4 ? <Loader2 size={18} style={{ animation: 'spin 1.5s linear infinite' }} /> : null}
-                  {step === 4 ? t('booking.btn_confirm') : t('booking.btn_continue')}
+                  {isLoading && step === 5 ? <Loader2 size={18} style={{ animation: 'spin 1.5s linear infinite' }} /> : null}
+                  {step === 5 ? t('booking.btn_confirm') : t('booking.btn_continue')}
                 </button>
               </div>
             </div>

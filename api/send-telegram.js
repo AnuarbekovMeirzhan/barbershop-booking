@@ -3,7 +3,7 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method Not Allowed' });
   }
 
-  const { barber, service, date, time } = req.body;
+  const { barber, service, date, time, name, phone } = req.body;
 
   // Use process.env for Node.js serverless functions (Vercel backend)
   const botToken = process.env.TELEGRAM_BOT_TOKEN;
@@ -13,7 +13,7 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: 'Telegram credentials missing or invalid' });
   }
 
-  const message = `🔔 *New Booking:*\n\n*Barber:* ${barber}\n*Service:* ${service}\n*Date:* ${date}\n*Time:* ${time}`;
+  const message = `🔔 *New Booking:*\n\n*Client:* ${name || 'N/A'}\n*Phone:* ${phone || 'N/A'}\n*Barber:* ${barber}\n*Service:* ${service}\n*Date:* ${date}\n*Time:* ${time}`;
 
   try {
     const telegramResponse = await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
