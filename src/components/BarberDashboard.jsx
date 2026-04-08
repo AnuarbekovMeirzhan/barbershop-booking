@@ -13,6 +13,16 @@ const BarberDashboard = ({ onBack }) => {
   const [selectedBarber, setSelectedBarber] = useState(
     localStorage.getItem('luxeBarberName') || ''
   );
+  const [pendingBarber, setPendingBarber] = useState(null);
+  const [passwordInput, setPasswordInput] = useState('');
+  const [authError, setAuthError] = useState('');
+
+  const BARBER_PASSWORDS = {
+    "James Rockford": "james123", "Джеймс Рокфорд": "james123", "Джеймс Рокфорд": "james123",
+    "William Sterling": "will123", "Уильям Стерлинг": "will123", "Уильям Стерлинг": "will123",
+    "Arthur Pendelton": "art123", "Артур Пенделтон": "art123", "Артур Пенделтон": "art123",
+  };
+  const DEFAULT_PASSWORD = "barber123";
 
   useEffect(() => {
     const q = query(collection(db, "appointments"), orderBy("createdAt", "desc"));
@@ -42,8 +52,26 @@ const BarberDashboard = ({ onBack }) => {
     localStorage.setItem('luxeBarberName', barberName);
   };
 
+  const handleBarberClick = (barberName) => {
+    setPendingBarber(barberName);
+    setPasswordInput('');
+    setAuthError('');
+  };
+
+  const handleLoginSubmit = (e) => {
+    e.preventDefault();
+    const correctPass = BARBER_PASSWORDS[pendingBarber] || DEFAULT_PASSWORD;
+    if (passwordInput === correctPass) {
+       handleSelectBarber(pendingBarber);
+       setPendingBarber(null);
+    } else {
+       setAuthError('Incorrect password. Access denied.');
+    }
+  };
+
   const handleLogout = () => {
     setSelectedBarber('');
+    setPendingBarber(null);
     localStorage.removeItem('luxeBarberName');
   };
 
@@ -60,7 +88,7 @@ const BarberDashboard = ({ onBack }) => {
     return (
       <div className="barber-dashboard selection-mode">
         <div className="container selection-container animate-fade-up">
-           <button onClick={onBack} className="btn-back">
+           <button onClick={onBack} className="btn-back" style={{marginBottom: '2rem'}}>
               <ArrowLeft size={20} />
               <span>Back to Site</span>
            </button>
@@ -70,14 +98,33 @@ const BarberDashboard = ({ onBack }) => {
               
               {loading ? (
                 <div className="loading-state">Loading profiles...</div>
+              ) : pendingBarber ? (
+                <div className="login-box fade-in">
+                  <button className="btn-back" onClick={() => setPendingBarber(null)} style={{margin: '0 auto 1.5rem', display: 'flex', color: 'var(--text-secondary)'}}>
+                    <ArrowLeft size={16} /> Back
+                  </button>
+                  <h3 style={{marginBottom: '0.5rem', color: 'var(--text-primary)', fontSize: '1.2rem'}}>{pendingBarber}</h3>
+                  <form onSubmit={handleLoginSubmit} className="login-form">
+                    <input 
+                      type="password" 
+                      value={passwordInput}
+                      onChange={(e) => setPasswordInput(e.target.value)}
+                      placeholder="Enter password"
+                      className="login-input"
+                      autoFocus
+                    />
+                    {authError && <div className="error-text">{authError}</div>}
+                    <button type="submit" className="btn-primary login-btn" style={{padding: '1rem'}}>Login</button>
+                  </form>
+                </div>
               ) : (
-                <div className="barber-list">
+                <div className="barber-list fade-in">
                   {uniqueBarbers.length === 0 && <p className="empty-state">No barbers found in records.</p>}
                   {uniqueBarbers.map(b => (
                     <button 
                       key={b} 
                       className="btn-barber-select"
-                      onClick={() => handleSelectBarber(b)}
+                      onClick={() => handleBarberClick(b)}
                     >
                       <User size={20} className="icon-gold" />
                       <span>{b}</span>

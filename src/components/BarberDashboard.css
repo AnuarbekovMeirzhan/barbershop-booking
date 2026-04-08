@@ -253,3 +253,32 @@
   color: #36a2eb;
   border: 1px solid rgba(54, 162, 235, 0.3);
 }
+
+/* Barber Login */
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.login-input {
+  width: 100%;
+  padding: 1rem;
+  background: var(--bg-color);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.login-input:focus {
+  border-color: var(--accent-gold);
+  outline: none;
+}
+
+.error-text {
+  color: #ff6b6b;
+  margin-top: -0.5rem;
+  font-size: 0.9rem;
+}
